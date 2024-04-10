@@ -50,10 +50,14 @@ app.get("/comments/:story_id",async(req,res)=>{
 
 app.get("/users/:username",async(req,res)=>{
     const username=req.params.username;
-    const submissions=await db.query("SELECT submissions FROM users WHERE username=$1",[username]);
-    const comments=await db.query("SELECT comment FROM comment WHERE username=$1",[username]);
-    const points=await db.query("SELECT points FROM users WHERE username=$1",[username]);
-    res.render("profile.ejs",{username:username,submissions:submissions,comments:comments,points:points})
+    const profile=await db.query("SELECT * FROM users WHERE username=$1",[username]);
+    console.log(profile.rows[0].submissions+" "+profile.rows[0].points)
+    const res3=await db.query("SELECT * FROM comments WHERE author=$1",[username]);
+    for(i=0;i<res3.rows.length;i++)
+    {
+        console.log(res3.rows[i].content);
+    }
+    //res.render("profile.ejs",{username:username,submissions:submissions,comments:comments,points:points})
 })
 
 app.listen(port, () => {
